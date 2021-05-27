@@ -332,29 +332,28 @@ while time<=endtime
     %--------------------------------------------------------------------------
     %           Computer active fiblast current
     %--------------------------------------------------------------------------
-    fE_Na=Rtonf*log(fNa_o/fNa_i);
+        fE_Na=Rtonf*log(fNa_o/fNa_i);
     
-    %  Time- and Voltage- Dependent K+ Current,I_Kv(pA/pF)
+    % Time- and Voltage- Dependent K+ Current,I_Kv(pA/pF)
+    fI_Kv=fG_Kv*fr_Kv*fs_Kv*(v_f-fE_K);
     ft_r=20.3+138*exp(-((v_f+20)/25.9)^2);
     ft_s=1574+5268*exp(-((v_f+23.0)/22.7)^2);
-    fr_i_inf=1.0/(1.0+exp(-(v_f+20.0)/11));
-    fs_i_inf=1.0/(1.0+exp((v_f+23.0)/7));
-    fr_Kv=fr_Kv+(fr_i_inf-fr_Kv)*dt/ft_r;
-    fs_Kv=fs_Kv+(fs_i_inf-fs_Kv)*dt/ft_s;
-    fI_Kv=fG_Kv*fr_Kv*fs_Kv*(v_f-fE_K);
-    
-    %Timei-Independent Inward-Rectifer K+ Current, I_K1(pA/pF)
+    fr_ioo=1.0/(1.0+exp(-(v_f+20.0)/11));
+    fs_ioo=1.0/(1.0+exp((v_f+23.0)/7));
+    fr_Kv=fr_Kv+(fr_ioo-fr_Kv)*dt/ft_r;
+    fs_Kv=fs_Kv+(fs_ioo-fs_Kv)*dt/ft_s;
+    % Timei-Independent Inward-Rectifer K+ Current, I_K1(pA/pF)
     falpha_K1=0.1/(1.0+exp(0.06*(v_f-fE_K-200)));
     fbate_K1=(3.0*exp(0.0002*(v_f-fE_K+100))+exp(0.1*(v_f-fE_K-10)))/...
         (1.0+exp(-0.5*(v_f-fE_K)));
     ref_fIK1=falpha_K1/(falpha_K1+fbate_K1);
     fI_K1=fG_K1*ref_fIK1*(v_f-fE_K);
     
-    %Na+ - K+ Exchanger Current, I_NaK(pA/pF)
+    % Na+ - K+ Exchanger Current, I_NaK(pA/pF)
     fI_NaK=fI_NaK_inf*(fK_o/(fK_o+fK_mk))*((v_f-fV_rev)/(v_f-fB))*...
         ((fNa_i/(fNa_i+fK_mNa))^1.5);
     
-    %Background Na+ current, Ib,Na(pA/pF)
+    % Background Na+ current, Ib,Na(pA/pF)
     fI_bNa=fG_bNa*(v_f-fE_Na);%
     %--------------------------------------------------------------------------
     %           Computer myocyte-active firboroblast coupling
